@@ -29,20 +29,19 @@ class AccessControlPanelCoordinator(DataUpdateCoordinator):
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
         """Initialize the coordinator."""
+        self.host = config_entry.data[CONF_HOST]
+        self.port = config_entry.data[CONF_PORT]
+        scan_interval = config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=self._get_update_interval(),
+            update_interval=scan_interval,
         )
         self.config_entry = config_entry
-        self.host = config_entry.data[CONF_HOST]
-        self.port = config_entry.data[CONF_PORT]
         self.session = async_get_clientsession(hass)
         self._base_url = f"http://{self.host}:{self.port}"
-
-    def _get_update_interval(self):
-        return self.config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
 
     async def _async_update_data(self):
         """Fetch data from the device."""
