@@ -1,0 +1,12 @@
+{
+  "domain": "access_control_panel",
+  "name": "Access Control Panel",
+  "codeowners": ["@bos_keyboard"],
+  "config_flow": true,
+  "documentation": "https://github.com/bos_keyboard/access_control_panel",
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/bos_keyboard/access_control_panel/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}

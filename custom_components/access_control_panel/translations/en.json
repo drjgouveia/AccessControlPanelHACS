@@ -1,0 +1,97 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Access Control Panel",
+        "description": "Enter the IP address and port of your Access Control Panel device.",
+        "data": {
+          "host": "[%key:common::config_flow::data::host%]",
+          "port": "[%key:common::config_flow::data::port%]",
+          "scan_interval": "Scan interval (seconds)"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Access Control Panel",
+        "description": "Update the connection settings for your device.",
+        "data": {
+          "host": "[%key:common::config_flow::data::host%]",
+          "port": "[%key:common::config_flow::data::port%]",
+          "scan_interval": "Scan interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the device.",
+      "invalid_response": "Device returned an unexpected response."
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "reconfigure_successful": "Reconfiguration was successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Scan interval (seconds)"
+        }
+      }
+    }
+  },
+  "services": {
+    "send_code": {
+      "name": "Send Code",
+      "description": "Sends an access code to the keypad."
+    },
+    "add_user": {
+      "name": "Add User",
+      "description": "Adds a new user to the access control system."
+    },
+    "remove_user": {
+      "name": "Remove User",
+      "description": "Removes a user from the access control system."
+    },
+    "update_user": {
+      "name": "Update User",
+      "description": "Updates user attributes."
+    },
+    "grant_division": {
+      "name": "Grant Division",
+      "description": "Grants a user access to a division."
+    },
+    "revoke_division": {
+      "name": "Revoke Division",
+      "description": "Revokes a user's access to a division."
+    },
+    "control_lock": {
+      "name": "Control Lock",
+      "description": "Controls a door lock (lock/unlock/open)."
+    }
+  },
+  "entity": {
+    "alarm_control_panel": {
+      "access_control_panel": {
+        "name": "Alarm"
+      }
+    },
+    "sensor": {
+      "access_log": {
+        "name": "Access Log"
+      },
+      "armed_status": {
+        "name": "Armed Status"
+      },
+      "alarm_status": {
+        "name": "Alarm Status"
+      },
+      "user_count": {
+        "name": "Registered Users"
+      }
+    },
+    "switch": {
+      "lock": {
+        "name": "Lock"
+      }
+    }
+  }
+}

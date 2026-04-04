@@ -1,0 +1,220 @@
+send_code:
+  name: Send Code
+  description: Sends an access code to the keypad.
+  fields:
+    entry_id:
+      name: Config Entry
+      description: The config entry ID (optional, uses first if omitted).
+      example: "abc123"
+      selector:
+        config_entry:
+          integration: access_control_panel
+    code:
+      name: Code
+      description: The access code to send.
+      example: "1234"
+      required: true
+      selector:
+        text:
+
+add_user:
+  name: Add User
+  description: Adds a new user to the access control system.
+  fields:
+    entry_id:
+      name: Config Entry
+      description: The config entry ID (optional, uses first if omitted).
+      example: "abc123"
+      selector:
+        config_entry:
+          integration: access_control_panel
+    user_id:
+      name: User ID
+      description: Unique identifier for the user.
+      example: "john_doe"
+      required: true
+      selector:
+        text:
+    name:
+      name: Name
+      description: Display name for the user.
+      example: "John Doe"
+      selector:
+        text:
+    user_code:
+      name: User Code
+      description: The keypad code for this user.
+      example: "5678"
+      required: true
+      selector:
+        text:
+    passcode:
+      name: Passcode
+      description: Additional passcode for web authentication.
+      example: "secret"
+      selector:
+        text:
+    access_level:
+      name: Access Level
+      description: Numeric access level.
+      example: 1
+      default: 1
+      selector:
+        number:
+          min: 0
+          max: 10
+          mode: box
+    divisions:
+      name: Divisions
+      description: List of divisions this user can access.
+      example: '["server_room", "office"]'
+      default: []
+      selector:
+        object:
+
+remove_user:
+  name: Remove User
+  description: Removes a user from the access control system.
+  fields:
+    entry_id:
+      name: Config Entry
+      description: The config entry ID (optional, uses first if omitted).
+      example: "abc123"
+      selector:
+        config_entry:
+          integration: access_control_panel
+    user_id:
+      name: User ID
+      description: Unique identifier of the user to remove.
+      example: "john_doe"
+      required: true
+      selector:
+        text:
+
+update_user:
+  name: Update User
+  description: Updates user attributes.
+  fields:
+    entry_id:
+      name: Config Entry
+      description: The config entry ID (optional, uses first if omitted).
+      example: "abc123"
+      selector:
+        config_entry:
+          integration: access_control_panel
+    user_id:
+      name: User ID
+      description: Unique identifier of the user to update.
+      example: "john_doe"
+      required: true
+      selector:
+        text:
+    name:
+      name: Name
+      description: New display name.
+      example: "John Smith"
+      selector:
+        text:
+    access_level:
+      name: Access Level
+      description: New access level.
+      example: 2
+      selector:
+        number:
+          min: 0
+          max: 10
+          mode: box
+    enabled:
+      name: Enabled
+      description: Whether the user is enabled.
+      example: true
+      selector:
+        boolean:
+
+grant_division:
+  name: Grant Division
+  description: Grants a user access to a division.
+  fields:
+    entry_id:
+      name: Config Entry
+      description: The config entry ID (optional, uses first if omitted).
+      example: "abc123"
+      selector:
+        config_entry:
+          integration: access_control_panel
+    user_id:
+      name: User ID
+      description: Unique identifier of the user.
+      example: "john_doe"
+      required: true
+      selector:
+        text:
+    division:
+      name: Division
+      description: Division ID to grant access to.
+      example: "server_room"
+      required: true
+      selector:
+        text:
+
+revoke_division:
+  name: Revoke Division
+  description: Revokes a user's access to a division.
+  fields:
+    entry_id:
+      name: Config Entry
+      description: The config entry ID (optional, uses first if omitted).
+      example: "abc123"
+      selector:
+        config_entry:
+          integration: access_control_panel
+    user_id:
+      name: User ID
+      description: Unique identifier of the user.
+      example: "john_doe"
+      required: true
+      selector:
+        text:
+    division:
+      name: Division
+      description: Division ID to revoke access from.
+      example: "server_room"
+      required: true
+      selector:
+        text:
+
+control_lock:
+  name: Control Lock
+  description: Controls a door lock (lock/unlock/open).
+  fields:
+    entry_id:
+      name: Config Entry
+      description: The config entry ID (optional, uses first if omitted).
+      example: "abc123"
+      selector:
+        config_entry:
+          integration: access_control_panel
+    division:
+      name: Division
+      description: Division ID of the lock to control.
+      example: "main_entrance"
+      required: true
+      selector:
+        text:
+    action:
+      name: Action
+      description: Action to perform on the lock.
+      example: "unlock"
+      required: true
+      default: "toggle"
+      selector:
+        select:
+          options:
+            - label: Lock
+              value: lock
+            - label: Unlock
+              value: unlock
+            - label: Open
+              value: open
+            - label: Toggle
+              value: toggle

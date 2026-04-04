@@ -1,0 +1,279 @@
+views:
+  - title: Access Control Panel
+    path: access-control
+    icon: mdi:shield-lock
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: System Status
+            show_header_toggle: false
+            entities:
+              - entity: sensor.armed_status
+                name: Armed Status
+                icon: mdi:shield
+              - entity: sensor.alarm_status
+                name: Alarm Status
+                icon: mdi:alarm-light
+              - entity: sensor.registered_users
+                name: Registered Users
+                icon: mdi:account-group
+
+          - type: alarm-panel
+            entity: alarm_control_panel.access_control_panel
+            name: Access Control
+            states:
+              - arm_home
+              - disarm
+
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Quick Actions
+            show_header_toggle: false
+            entities:
+              - action:
+                  action: call-service
+                  service: access_control_panel.send_code
+                  data:
+                    code: "1234"
+                name: Send Master Code
+                icon: mdi:key
+              - action:
+                  action: call-service
+                  service: access_control_panel.control_lock
+                  data:
+                    division: main_entrance
+                    action: unlock
+                name: Unlock Main Entrance
+                icon: mdi:door-open
+              - action:
+                  action: call-service
+                  service: access_control_panel.control_lock
+                  data:
+                    division: main_entrance
+                    action: lock
+                name: Lock Main Entrance
+                icon: mdi:door-closed
+
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Door Locks
+            show_header_toggle: false
+            entities:
+              - entity: switch.lock_main_entrance
+                name: Main Entrance
+                icon: mdi:lock
+              - entity: switch.lock_server_room
+                name: Server Room
+                icon: mdi:lock
+              - entity: switch.lock_office
+                name: Office
+                icon: mdi:lock
+              - entity: switch.lock_storage
+                name: Storage
+                icon: mdi:lock
+
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Recent Access Log
+            show_header_toggle: false
+            entities:
+              - entity: sensor.access_log
+                name: Last Event
+                icon: mdi:format-list-bulleted
+
+          - type: markdown
+            title: Access History
+            content: >
+              {% set entries = state_attr('sensor.access_log', 'entries') %}
+              {% if entries %}
+              <table>
+              <tr><th>Time</th><th>Code</th><th>Result</th><th>Action</th></tr>
+              {% for entry in entries %}
+              <tr>
+                <td>{{ entry.time }}</td>
+                <td>{{ entry.code }}</td>
+                <td>{{ '✅' if entry.granted else '❌' }}</td>
+                <td>{{ entry.action }}</td>
+              </tr>
+              {% endfor %}
+              </table>
+              {% else %}
+              No access events recorded.
+              {% endif %}
+
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: User Management
+            show_header_toggle: false
+            entities:
+              - entity: sensor.registered_users
+                name: Total Users
+                icon: mdi:account-group
+
+          - type: markdown
+            title: Registered Users
+            content: >
+              {% set users = state_attr('sensor.registered_users', 'users') %}
+              {% if users %}
+              <table>
+              <tr><th>Name</th><th>Level</th><th>Divisions</th><th>Status</th></tr>
+              {% for user in users %}
+              <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.access_level }}</td>
+                <td>{{ user.divisions | join(', ') if user.divisions else 'None' }}</td>
+                <td>{{ '✅' if user.enabled else '❌' }}</td>
+              </tr>
+              {% endfor %}
+              </table>
+              {% else %}
+              No users registered.
+              {% endif %}
+
+  - title: User Management
+    path: user-management
+    icon: mdi:account-cog
+    cards:
+      - type: entities
+        title: Add New User
+        show_header_toggle: false
+        entities:
+          - action:
+              action: call-service
+              service: access_control_panel.add_user
+              data:
+                user_id: new_user
+                name: New User
+                user_code: "0000"
+                passcode: ""
+                access_level: 1
+                divisions: []
+            name: Add User (Edit in Developer Tools)
+            icon: mdi:account-plus
+
+      - type: markdown
+        title: Add User via Developer Tools
+        content: >
+          Go to **Developer Tools > Services** and call `access_control_panel.add_user` with:
+
+          ```yaml
+          user_id: john_doe
+          name: John Doe
+          user_code: "5678"
+          passcode: "secret123"
+          access_level: 1
+          divisions:
+            - server_room
+            - office
+          ```
+
+      - type: markdown
+        title: Update User
+        content: >
+          Call `access_control_panel.update_user`:
+
+          ```yaml
+          user_id: john_doe
+          name: John Smith
+          access_level: 2
+          enabled: true
+          ```
+
+      - type: markdown
+        title: Remove User
+        content: >
+          Call `access_control_panel.remove_user`:
+
+          ```yaml
+          user_id: john_doe
+          ```
+
+      - type: markdown
+        title: Manage Division Access
+        content: >
+          **Grant access:**
+          ```yaml
+          service: access_control_panel.grant_division
+          data:
+            user_id: john_doe
+            division: server_room
+          ```
+
+          **Revoke access:**
+          ```yaml
+          service: access_control_panel.revoke_division
+          data:
+            user_id: john_doe
+            division: server_room
+          ```
+
+  - title: Lock Control
+    path: lock-control
+    icon: mdi:lock-pattern
+    cards:
+      - type: entities
+        title: All Locks
+        show_header_toggle: false
+        entities:
+          - entity: switch.lock_main_entrance
+            name: Main Entrance
+            secondary_info: last-changed
+            icon: mdi:door
+          - entity: switch.lock_server_room
+            name: Server Room
+            secondary_info: last-changed
+            icon: mdi:server
+          - entity: switch.lock_office
+            name: Office
+            secondary_info: last-changed
+            icon: mdi:desk
+          - entity: switch.lock_storage
+            name: Storage
+            secondary_info: last-changed
+            icon: mdi:archive
+
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: switch.lock_main_entrance
+            name: Unlock All
+            icon: mdi:lock-open-variant
+            tap_action:
+              action: call-service
+              service: access_control_panel.control_lock
+              data:
+                division: main_entrance
+                action: unlock
+          - type: button
+            entity: switch.lock_server_room
+            name: Lock All
+            icon: mdi:lock-variant
+            tap_action:
+              action: call-service
+              service: access_control_panel.control_lock
+              data:
+                division: main_entrance
+                action: lock
+
+      - type: markdown
+        title: Lock Actions
+        content: >
+          Available lock actions:
+
+          - **lock** - Secure the door
+          - **unlock** - Release the lock
+          - **open** - Momentary open (auto-relock)
+          - **toggle** - Toggle current state
+
+          Call via Developer Tools:
+          ```yaml
+          service: access_control_panel.control_lock
+          data:
+            division: server_room
+            action: open
+          ```
