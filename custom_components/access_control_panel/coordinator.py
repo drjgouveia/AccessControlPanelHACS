@@ -1,6 +1,7 @@
 """DataUpdateCoordinator for Access Control Panel."""
 
 import logging
+from datetime import timedelta
 
 import aiohttp
 
@@ -31,7 +32,9 @@ class AccessControlPanelCoordinator(DataUpdateCoordinator):
         """Initialize the coordinator."""
         self.host = config_entry.data[CONF_HOST]
         self.port = config_entry.data[CONF_PORT]
-        scan_interval = config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+        scan_interval = timedelta(
+            seconds=config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+        )
 
         super().__init__(
             hass,
